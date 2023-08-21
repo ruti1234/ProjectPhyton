@@ -36,7 +36,6 @@ cv2.putText(canvasImage_combined, f"Points: {points}", (20, 40), cv2.FONT_HERSHE
 matrix = np.zeros((height, width), dtype=int)
 
 while True:
-
     pieceImage = cv2.imread(random.choice(filePaths_example))
    # pieceImage=f.makeBackgroundTransfer(pieceImage)
     pieceLocation = np.array([0, int(canvasImage_orig.shape[1] / random.choice(range(2, 6)))])  # Top Left Corner
@@ -44,7 +43,7 @@ while True:
 
     isReachedEndOfCanvas = False
     isCollisionDetected = False
-    game_over= False
+    game_over = False
     if not pygame.mixer.music.get_busy():
      pygame.mixer.music.play(-1)
     canvasImage = canvasImage_combined.copy()
@@ -69,7 +68,7 @@ while True:
         targetArray[:pieceHeight, :pieceWidth] = pieceImage
         canvasImage[pieceLocation[0]:targetHeight, pieceLocation[1]:targetWidth] = targetArray
         cv2.imshow('canvas', canvasImage)
-        key = cv2.waitKey(20)
+        key = cv2.waitKey(3)
         pieceLocation = pieceLocation + pieceVelocity
         if key == ord('a'):
             pieceLocation[1] -= 10

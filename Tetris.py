@@ -25,9 +25,7 @@ class Tetris:
         self.canvasImage_orig = cv2.resize(self.canvasImage_orig, (self.width, self.height))
         self.canvasImage_combined = self.canvasImage_orig.copy()
         #self.last_piece = self.canvasImage_orig.copy()
-
         self.showPoints(self.canvasImage_combined)
-
         # Initialize the matrix with zeros
         self.matrix = np.zeros((self.height, self.width), dtype=int)
 
@@ -63,30 +61,30 @@ class Tetris:
 
             self.play_music()
 
-            self.canvasImage = self.canvasImage_combined.copy()
+            canvasImage = self.canvasImage_combined.copy()
 
             pieceHeight, pieceWidth, _ = pieceImage.shape
-            canvasHeight, canvasWidth, _ = self.canvasImage.shape
+            canvasHeight, canvasWidth, _ = canvasImage.shape
 
             if 1 in self.matrix[pieceLocation[0]:pieceLocation[0] + pieceHeight,
                     pieceLocation[1]:pieceLocation[1] + pieceWidth]:
                 game_over = True
                 break
+
             while not isReachedEndOfCanvas and not isCollisionDetected:
-                self.canvasImage = self.canvasImage_combined.copy()
+                canvasImage = self.canvasImage_combined.copy()
                 pieceHeight, pieceWidth, _ = pieceImage.shape
-                canvasHeight, canvasWidth, _ = self.canvasImage.shape
+                canvasHeight, canvasWidth, _ = canvasImage.shape
                 targetHeight = pieceLocation[0] + pieceHeight
                 targetWidth = pieceLocation[1] + pieceWidth
 
                 targetArray = np.zeros((targetHeight - pieceLocation[0], targetWidth - pieceLocation[1], 3),
                                        dtype=np.uint8)
                 targetArray[:pieceHeight, :pieceWidth] = pieceImage
-                self.canvasImage[pieceLocation[0]:targetHeight, pieceLocation[1]:targetWidth] = targetArray
+                canvasImage[pieceLocation[0]:targetHeight, pieceLocation[1]:targetWidth] = targetArray
 
-                cv2.imshow('canvas', self.canvasImage)
+                cv2.imshow('canvas', canvasImage)
                 key = cv2.waitKey(20)
-
                 pieceLocation = pieceLocation + pieceVelocity
 
                 if key == ord('a'):
@@ -96,14 +94,14 @@ class Tetris:
                 elif key == ord('q'):
                     sys.exit(0)
 
-                if not self.check_validation_in_matrix(self.matrix, pieceLocation[0], targetHeight, pieceLocation[1], targetWidth):
+                if not self.check_validation_in_matrix(self.matrix, pieceLocation[0], targetHeight,
+                                                       pieceLocation[1], targetWidth):
                     print("Collision!")
                     isCollisionDetected = True
 
                 isReachedEndOfCanvas = pieceLocation[0] + pieceHeight > canvasHeight - 10
 
-                self.matrix[pieceLocation[0]:pieceLocation[0] + pieceHeight,
-                pieceLocation[1]:pieceLocation[1] + pieceWidth] = 1
+                self.matrix[pieceLocation[0]:pieceLocation[0] + pieceHeight, pieceLocation[1]:pieceLocation[1] + pieceWidth] = 1
 
                 # Check if isReachedEndOfCanvas is true or collision is detected
                 if isReachedEndOfCanvas or isCollisionDetected:
@@ -115,10 +113,8 @@ class Tetris:
 
                     self.moreSound(sub_music)
 
-                    self.canvasImage_combined[pieceLocation[0]:pieceLocation[0] + pieceHeight,
-                    pieceLocation[1]:pieceLocation[1] + pieceWidth] = pieceImage
+                    self.canvasImage_combined[pieceLocation[0]:pieceLocation[0] + pieceHeight, pieceLocation[1]:pieceLocation[1] + pieceWidth] = pieceImage
                     self.points += 1
-
                     self.showPoints(self.canvasImage_combined)
 
                     if pieceLocation[0] <= 10:
@@ -134,22 +130,20 @@ class Tetris:
                 self.showPoints(self.canvasImage_combined)
 
                 # Display the updated canvas image with the points
-                cv2.imshow('canvas', self.canvasImage)
+                cv2.imshow('canvas', canvasImage)
                 cv2.waitKey(1)
-
                 self.moreSound(sub_music)
-
                 time.sleep(2)  # Delay for 2 seconds before displaying "Game Over"
 
                 # Add the "Game Over" text
-                org = (self.canvasImage.shape[1] // 2 - 300, self.canvasImage.shape[0] // 2)
+                org = (canvasImage.shape[1] // 2 - 300, canvasImage.shape[0] // 2)
                 fontScale = 3
                 color = (0, 0, 255)
                 thickness = 5
-                self.canvasImage = cv2.putText(self.canvasImage_combined, 'Game Over', org, cv2.FONT_HERSHEY_SIMPLEX,
+                canvasImage = cv2.putText(self.canvasImage_combined, 'Game Over', org, cv2.FONT_HERSHEY_SIMPLEX,
                                                fontScale, color, thickness, cv2.LINE_AA)
 
-                cv2.imshow('canvas', self.canvasImage)
+                cv2.imshow('canvas', canvasImage)
                 cv2.waitKey(1)
 
                 time.sleep(3)  # Delay for 1 second after displaying everything
