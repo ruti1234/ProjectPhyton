@@ -51,8 +51,7 @@ class Tetris:
     def play(self, sub_music):
         while True:
             pieceImage = cv2.imread(random.choice(self.filePaths_example))
-            pieceLocation = np.array(
-                [0, int(self.canvasImage_orig.shape[1] / random.choice(range(2, 6)))])  # Top Left Corner
+            pieceLocation = np.array([0, int(self.canvasImage_orig.shape[1] / random.choice(range(2, 6)))])  # Top Left Corner
             pieceVelocity = np.array([1, 0])
 
             isReachedEndOfCanvas = False
@@ -84,7 +83,7 @@ class Tetris:
                 canvasImage[pieceLocation[0]:targetHeight, pieceLocation[1]:targetWidth] = targetArray
 
                 cv2.imshow('canvas', canvasImage)
-                key = cv2.waitKey(20)
+                key = cv2.waitKey(2)
                 pieceLocation = pieceLocation + pieceVelocity
 
                 if key == ord('a'):
@@ -101,56 +100,57 @@ class Tetris:
 
                 isReachedEndOfCanvas = pieceLocation[0] + pieceHeight > canvasHeight - 10
 
-                self.matrix[pieceLocation[0]:pieceLocation[0] + pieceHeight, pieceLocation[1]:pieceLocation[1] + pieceWidth] = 1
 
-                # Check if isReachedEndOfCanvas is true or collision is detected
-                if isReachedEndOfCanvas or isCollisionDetected:
-                    if isReachedEndOfCanvas:
-                        # Prevent downloading pictures from the top of the canvas
-                        invalid_x = pieceLocation[0] + pieceHeight - canvasHeight
-                        invalid_y = pieceLocation[1] + pieceWidth // 2
-                        self.matrix[invalid_x:, invalid_y] = 1
+            self.matrix[pieceLocation[0]:pieceLocation[0] + pieceHeight, pieceLocation[1]:pieceLocation[1] + pieceWidth] = 1
 
-                    self.moreSound(sub_music)
 
-                    self.canvasImage_combined[pieceLocation[0]:pieceLocation[0] + pieceHeight, pieceLocation[1]:pieceLocation[1] + pieceWidth] = pieceImage
-                    self.points += 1
-                    self.showPoints(self.canvasImage_combined)
+            if isReachedEndOfCanvas or isCollisionDetected:
+                if isReachedEndOfCanvas:
+                    # Prevent downloading pictures from the top of the canvas
+                    invalid_x = pieceLocation[0] + pieceHeight - canvasHeight
+                    invalid_y = pieceLocation[1] + pieceWidth // 2
+                    self.matrix[invalid_x:, invalid_y] = 1
 
-                    if pieceLocation[0] <= 10:
-                        print("Image reached the top frame of the canvas. Game over.")
-                        game_over = True
-                        break
+                self.moreSound(sub_music)
 
-                    key1 = cv2.waitKey(1)
-                    if key1 == ord('q'):
-                        sys.exit(0)
-
-            if game_over:
+                self.canvasImage_combined[pieceLocation[0]:pieceLocation[0] + pieceHeight, pieceLocation[1]:pieceLocation[1] + pieceWidth] = pieceImage
+                self.points += 1
                 self.showPoints(self.canvasImage_combined)
 
-                # Display the updated canvas image with the points
-                cv2.imshow('canvas', canvasImage)
-                cv2.waitKey(1)
-                self.moreSound(sub_music)
-                time.sleep(2)  # Delay for 2 seconds before displaying "Game Over"
+                if pieceLocation[0] <= 10:
+                    print("Image reached the top frame of the canvas. Game over.")
+                    game_over = True
+                    break
 
-                # Add the "Game Over" text
-                org = (canvasImage.shape[1] // 2 - 300, canvasImage.shape[0] // 2)
-                fontScale = 3
-                color = (0, 0, 255)
-                thickness = 5
-                canvasImage = cv2.putText(self.canvasImage_combined, 'Game Over', org, cv2.FONT_HERSHEY_SIMPLEX,
-                                               fontScale, color, thickness, cv2.LINE_AA)
+                key1 = cv2.waitKey(1)
+                if key1 == ord('q'):
+                    sys.exit(0)
 
-                cv2.imshow('canvas', canvasImage)
-                cv2.waitKey(1)
+        if game_over:
+            self.showPoints(self.canvasImage_combined)
 
-                time.sleep(3)  # Delay for 1 second after displaying everything
+            # Display the updated canvas image with the points
+            cv2.imshow('canvas', canvasImage)
+            cv2.waitKey(1)
+            self.moreSound(sub_music)
+            time.sleep(2)  # Delay for 2 seconds before displaying "Game Over"
 
-                pygame.mixer.music.stop()  # Stop the music
-                sys.exit(0)
+            # Add the "Game Over" text
+            org = (canvasImage.shape[1] // 2 - 300, canvasImage.shape[0] // 2)
+            fontScale = 3
+            color = (0, 0, 255)
+            thickness = 5
+            canvasImage = cv2.putText(self.canvasImage_combined, 'Game Over', org, cv2.FONT_HERSHEY_SIMPLEX,
+                                           fontScale, color, thickness, cv2.LINE_AA)
 
-game = Tetris(r'C:\L5\Canvas.png', r'C:\L5\pic', "C:\\L5\\Barnville.mp3", 800, 600)
+            cv2.imshow('canvas', canvasImage)
+            cv2.waitKey(1)
+
+            time.sleep(3)  # Delay for 1 second after displaying everything
+
+            pygame.mixer.music.stop()  # Stop the music
+            sys.exit(0)
+
+game = Tetris(r'C:\L5\Canvas.png', r'C:\L5\pic', "C:\\L5\\Barnville.mp3", 1500, 780)
 game.play("C:\\L5\\sound-effect-twinklesparkle-115095.mp3")
 
