@@ -49,4 +49,5 @@ while not isOver:
         height, width, channels = pieceImage.shape
         pieceImage = cv2.resize(pieceImage, (width, height))
         pieceLocation = np.array([0, int(random.random() * canvasImage_orig.shape[1])])
+
 cv2.waitKey()
