@@ -146,9 +146,9 @@ class Tetris:
             cv2.imshow('canvas', canvasImage)
             cv2.waitKey(1)
 
-            time.sleep(3)  # Delay for 1 second after displaying everything
+            time.sleep(3)
 
-            pygame.mixer.music.stop()  # Stop the music
+            pygame.mixer.music.stop()
             sys.exit(0)
 
 game = Tetris(r'C:\L5\Canvas.png', r'C:\L5\pic', "C:\\L5\\Barnville.mp3", 1500, 780)
